@@ -20,8 +20,7 @@ namespace EscapeRoom
                 {
                     // Menu option 1: Adding child
                     case 1:
-                        System.Console.WriteLine("MM - PRESSED 1");
-                        Console.ReadKey();
+                        Menu.DisplayCohortInfo(db);
                         break;
 
                     // Menu option 2: Adding toy
