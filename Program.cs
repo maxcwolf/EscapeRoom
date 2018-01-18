@@ -9,41 +9,27 @@ namespace EscapeRoom
             // Create an instance of the database interface
             DatabaseInterface db = new DatabaseInterface();
 
-            // Check/create the Account table
-            db.CheckAccountTable();
-
             int choice;
 
             do
             {
-                // Show the main menu by invoking the static method
-                choice = MainMenu.Show();
+                // Show the main menu
+                choice = Menu.ShowMainMenu();
 
                 switch (choice)
                 {
-                    // Menu option 1: Adding account
+                    // Menu option 1: Adding child
                     case 1:
-                        // Ask user to input customer name
-                        string CustomerName = Console.ReadLine();
-
-                        // Insert customer account into database
-                        db.Insert($@"
-                            INSERT INTO Account
-                            (Id, Customer, Balance)
-                            VALUES
-                            (null, '{CustomerName}', 0)
-                        ");
+                        System.Console.WriteLine("MM - PRESSED 1");
+                        Console.ReadKey();
                         break;
 
-                    // Menu option 2: Deposit money
+                    // Menu option 2: Adding toy
                     case 2:
-                        // Logic here
+                        Menu.ShowDBMenu(db);
                         break;
                 }
-            } while (choice != 5);
-
-
-
+            } while (choice != 3);
         }
     }
 }
