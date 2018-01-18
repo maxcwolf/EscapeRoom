@@ -50,88 +50,88 @@ namespace EscapeRoom
                 {
                     // Menu option 1: Adding account
                     case 1:
-                    {
-                        Console.Clear();
-                        Console.WriteLine("ADD PRIMARY TRACK SERVER SIDE LANGUAGE : ");
-                        Console.Write("> ");
-                        string language = Console.ReadLine();
-                        db.Insert($@"
+                        {
+                            Console.Clear();
+                            Console.WriteLine("ADD PRIMARY TRACK SERVER SIDE LANGUAGE : ");
+                            Console.Write("> ");
+                            string language = Console.ReadLine();
+                            db.Insert($@"
                             INSERT INTO Language
                             (Id, Language)
                             VALUES
                             (null, '{language}')
                         ");
-                        break;
-                    }
+                            break;
+                        }
 
                     // Menu option 2: Deposit money
                     case 2:
-                    {
-                        Console.Clear();
-                        Console.WriteLine("ADD INSTRUCTOR : ");
-                        Console.Write("> ");
-                        string name = Console.ReadLine();
-                        db.Insert($@"
+                        {
+                            Console.Clear();
+                            Console.WriteLine("ADD INSTRUCTOR : ");
+                            Console.Write("> ");
+                            string name = Console.ReadLine();
+                            db.Insert($@"
                             INSERT INTO Instructors
                             (Id, Name)
                             VALUES
                             (null, '{name}')
                         ");
-                        break;
-                    }
+                            break;
+                        }
 
                     case 3:
-                    {
-                        Console.Clear();
-                        Console.WriteLine("ADD COHORT NAME : ");
-                        Console.Write("> ");
-                        string cohort = Console.ReadLine();
-                        // Display all languages
-                        int languageId = Menu.ListLanguages(db);
-                        db.Insert($@"
+                        {
+                            Console.Clear();
+                            Console.WriteLine("ADD COHORT NAME : ");
+                            Console.Write("> ");
+                            string cohort = Console.ReadLine();
+                            // Display all languages
+                            int languageId = Menu.ListLanguages(db);
+                            db.Insert($@"
                             INSERT INTO Cohort
                             (Id, Cohort, LanguageId)
                             VALUES
                             (null, '{cohort}', {languageId})
                         ");
-                        break;
-                    }
+                            break;
+                        }
 
                     case 4:
-                    {
-                        // Logic here
-                        Console.Clear();
-                        Console.WriteLine("ADD STUDENT NAME : ");
-                        Console.Write("> ");
-                        string name = Console.ReadLine();
-                        // Display all languages
-                        int cohortId = Menu.ListCohorts(name, db);
-                        db.Insert($@"
+                        {
+                            // Logic here
+                            Console.Clear();
+                            Console.WriteLine("ADD STUDENT NAME : ");
+                            Console.Write("> ");
+                            string name = Console.ReadLine();
+                            // Display all languages
+                            int cohortId = Menu.ListCohorts(name, db);
+                            db.Insert($@"
                             INSERT INTO Student
                             (Id, Name, CohortId)
                             VALUES
                             (null, '{name}', {cohortId})
                         ");
-                        break;
-                    }
+                            break;
+                        }
 
                     case 5:
-                    {
-                        Console.Clear();
-                        (int Id, string Name) instructors = Menu.ListInstructors(db);
-                        int cohortId = Menu.ListCohorts(instructors.Name, db);
+                        {
+                            Console.Clear();
+                            (int Id, string Name) instructors = Menu.ListInstructors(db);
+                            int cohortId = Menu.ListCohorts(instructors.Name, db);
 
-                        db.Insert($@"
+                            db.Insert($@"
                             INSERT INTO CohortInstructors
                             (Id, CohortId, InstructorsId)
                             VALUES
                             (null, '{cohortId}', {instructors.Id})
                         ");
 
-                        // Logic here
-                        break;
-                    }
-                        
+                            // Logic here
+                            break;
+                        }
+
                 }
             } while (choice != 6);
         }
@@ -182,7 +182,14 @@ namespace EscapeRoom
                });
 
             Console.Clear();
-            Console.WriteLine($"Choose {name}'s Cohort :");
+            if (name.Equals(""))
+            {
+                Console.WriteLine($"Choose Cohort From The List :");
+            }
+            else
+            {
+                Console.WriteLine($"Choose {name}'s Cohort :");
+            }
             Console.WriteLine("Enter ID Number");
             Console.WriteLine("*****************************");
 
@@ -192,10 +199,10 @@ namespace EscapeRoom
             });
 
             Console.Write("> ");
-            ConsoleKeyInfo enteredKey = Console.ReadKey();
+            string enteredKey = Console.ReadLine();
             Console.WriteLine("");
 
-            return int.Parse(enteredKey.KeyChar.ToString());
+            return int.Parse(enteredKey);
         }
 
         public static (int Id, string Name) ListInstructors(DatabaseInterface db)
@@ -229,6 +236,61 @@ namespace EscapeRoom
             int choice = int.Parse(enteredKey.KeyChar.ToString());
 
             return InstructorsList.Find(x => x.Id == choice);
+        }
+
+        public static void DisplayCohortInfo(DatabaseInterface db)
+        {
+            int cohortId = ListCohorts("", db);
+
+            string cohortName = "";
+            HashSet<string> instructorNames = new HashSet<string>();
+            HashSet<string> studentNames = new HashSet<string>();
+            string language = "";
+
+            db.Query($@"
+                SELECT Cohort.Cohort, Language.Language, Instructors.Name, Student.Name FROM Cohort
+                JOIN Language
+                ON Cohort.LanguageId = Language.Id
+                JOIN CohortInstructors
+                On Cohort.Id = CohortInstructors.CohortId
+                JOIN Instructors
+                On CohortInstructors.InstructorsId = Instructors.Id
+                JOIN Student
+                ON Cohort.Id = Student.CohortId
+                WHERE Cohort.Id = {cohortId}
+            ", (SqliteDataReader handler) =>
+            {
+                while (handler.Read())
+                {
+                    cohortName = handler.GetString(0);
+                    language = handler.GetString(1);
+                    instructorNames.Add(handler.GetString(2));
+                    studentNames.Add(handler.GetString(3));
+                }
+            });
+
+            Console.Clear();
+            Console.WriteLine($"COHORT : {cohortName}");
+            Console.WriteLine("*****************");
+            Console.WriteLine($"LANGUAGE : {language}");
+            Console.WriteLine("*****************");
+            Console.Write("INSTRUCTORS : ");
+            foreach (var inst in instructorNames)
+            {
+                Console.Write($"{inst} ");
+            }
+            Console.WriteLine("");
+            Console.WriteLine("*****************");
+            Console.WriteLine("");
+            Console.WriteLine("STUDENTS : ");
+            foreach (var student in studentNames)
+            {
+                Console.WriteLine($"{student} ");
+            }
+            Console.WriteLine("");
+            Console.WriteLine("Press Any Key To Return To Main Menu");
+            Console.ReadKey();
+
         }
     }
 }
