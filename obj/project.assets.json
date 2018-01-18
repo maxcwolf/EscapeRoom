@@ -311,6 +311,9 @@
         "runtime": {
           "lib/netstandard1.1/SQLitePCLRaw.provider.e_sqlite3.dll": {}
         }
+      },
+      "System.Data.SQLite/1.0.106": {
+        "type": "package"
       }
     }
   },
@@ -914,12 +917,22 @@
         "sqlitepclraw.provider.e_sqlite3.netstandard11.1.1.7.nupkg.sha512",
         "sqlitepclraw.provider.e_sqlite3.netstandard11.nuspec"
       ]
+    },
+    "System.Data.SQLite/1.0.106": {
+      "sha512": "7BLZMo2NrV01kJIEdDAgCdDs3f0DPkd1gmAjURo0ziN00q+KWWX2S5RoqTQm0LbbBUe2ycUSiiDYIIPip56+kw==",
+      "type": "package",
+      "path": "system.data.sqlite/1.0.106",
+      "files": [
+        "system.data.sqlite.1.0.106.nupkg.sha512",
+        "system.data.sqlite.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.0": [
       "Microsoft.Data.SQLite >= 2.0.0",
-      "Microsoft.NETCore.App >= 2.0.0"
+      "Microsoft.NETCore.App >= 2.0.0",
+      "System.Data.SQLite >= 1.0.106"
     ]
   },
   "packageFolders": {
@@ -969,6 +982,10 @@
             "target": "Package",
             "version": "[2.0.0, )",
             "autoReferenced": true
+          },
+          "System.Data.SQLite": {
+            "target": "Package",
+            "version": "[1.0.106, )"
           }
         },
         "imports": [
