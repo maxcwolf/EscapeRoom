@@ -122,11 +122,11 @@ namespace EscapeRoom
                             int cohortId = Menu.ListCohorts(instructors.Name, db);
 
                             db.Insert($@"
-                            INSERT INTO CohortInstructors
-                            (Id, CohortId, InstructorsId)
-                            VALUES
-                            (null, '{cohortId}', {instructors.Id})
-                        ");
+                                INSERT INTO CohortInstructors
+                                (Id, CohortId, InstructorsId)
+                                VALUES
+                                (null, '{cohortId}', {instructors.Id})
+                            ");
 
                             // Logic here
                             break;
@@ -230,10 +230,10 @@ namespace EscapeRoom
             });
 
             Console.Write("> ");
-            ConsoleKeyInfo enteredKey = Console.ReadKey();
+            string enteredKey = Console.ReadLine();
             Console.WriteLine("");
 
-            int choice = int.Parse(enteredKey.KeyChar.ToString());
+            int choice = int.Parse(enteredKey);
 
             return InstructorsList.Find(x => x.Id == choice);
         }
